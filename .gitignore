@@ -1,3 +1,4 @@
 *.csv
 *.trans_raw.xlsx
 *.pyc
+*.__pycache__

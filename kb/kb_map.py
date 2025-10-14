@@ -37,8 +37,8 @@ STOCK_INFO_MAP = {
     '지오 그룹': ['GEO', 'The GEO Group, Inc.', 'Stock'],
     '현대두산인프라코어31': ['현대두산인프라코어31', '현대두산인프라코어31', 'Bond'],
     '삼척블루파워6': ['삼척블루파워6', '삼척블루파워6', 'Bond'],
-    'KODEX 미국S&P500선물(H)': ['069500', 'KODEX 미국S&P500선물(H)', 'ETF'],
-    'KODEX 미국달러선물인버스': ['261240', 'KODEX 미국달러선물인버스', 'ETF'],
+    'KODEX 미국S&P500선물(H)': ['A069500', 'KODEX 미국S&P500선물(H)', 'ETF'],
+    'KODEX 미국달러선물인버스': ['A261240', 'KODEX 미국달러선물인버스', 'ETF'],
     'DIREXION 20+Y TREASURY DAILY 3X': ['TMF', 'Direxion Daily 20+ Year Treasury Bull 3X Shares', 'ETF'],
     '씨티그룹': ['C', 'Citigroup Inc.', 'Stock'],
     '인모드': ['INMD', 'InMode Ltd.', 'Stock'],
@@ -50,8 +50,8 @@ STOCK_INFO_MAP = {
     '에어비앤비': ['ABNB', 'Airbnb, Inc.', 'Stock'],
     '허츠 글로벌 홀딩스': ['HTZ', 'Hertz Global Holdings, Inc.', 'Stock'],
     '테이크 투 인터렉티브 소프트웨어': ['TTWO', 'Take-Two Interactive Software, Inc.', 'Stock'],
-    '파라마운트 스카이댄스': ['PARA', 'Paramount Global', 'Stock'],  # 합병 관련 변동 있음
-    '버크셔 해서웨이 B': ['BRK-B', 'Berkshire Hathaway Inc. Class B', 'Stock'],
+    '파라마운트 스카이댄스': ['PSKY', 'Paramount SkyDanceCorporation', 'Stock'],  # 합병 관련 변동 있음
+    '버크셔 해서웨이 B': ['BRK.B', 'Berkshire Hathaway Inc. Class B', 'Stock'],
     '아틀라시언': ['TEAM', 'Atlassian Corporation Plc', 'Stock'],
     '셰브론': ['CVX', 'Chevron Corporation', 'Stock'],
     '레스토랑 브랜즈 인터내셔널': ['QSR', 'Restaurant Brands International Inc.', 'Stock'],
