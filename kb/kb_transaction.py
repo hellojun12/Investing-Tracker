@@ -1,6 +1,12 @@
+import sys
+import os
 import numpy as np
 import pandas as pd 
 from datetime import datetime
+
+# Set PYTHONPATH to the root of the project
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+
 from kb_map import REINDEX_COLUMNS, FORMATTED_COLUMNS, TYPE_ERROR_MAP, STOCK_INFO_MAP, TRANSACTION_TYPE_MAP
 
 RAW_DATA_PATH = "./data_storage/trans_raw.xlsx"

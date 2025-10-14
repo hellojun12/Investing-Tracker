@@ -14,8 +14,9 @@ def process_security_transactions(transaction, date):
         sec_type = transaction['분류']
         amount = float(transaction['수량/좌수'])
         price = float(transaction['단가/매매기준가'])
+        market = transaction['시장구분/통화구분']
         
-        portfolio.add_stock_transaction(date, ticker, name, sec_type, amount, price, transaction_type)
+        portfolio.add_stock_transaction(date, ticker, name, sec_type, amount, price, market, transaction_category)
             
 
 def process_cash_transactions(transaction, date):
@@ -23,15 +24,16 @@ def process_cash_transactions(transaction, date):
     # 현금 거래 처리 - 정산금액 기반
     won_settlement = 0 if pd.isna(transaction['정산금액']) else transaction['정산금액']
     usd_settlement = 0 if pd.isna(transaction['외화정산금액']) else transaction['외화정산금액']
-    currency_ex_rate = transaction['환율']
     transaction_type = transaction['적요명']
+    currency_ex_rate = transaction['환율']
     transaction_category = transaction['적요분류']
 
+    
     # 원화 정산금액 처리
-    if transaction_category in ["cash_in", "dividend_in", "stock_sell", "usd_to_won"]:
+    if transaction_category in ["cash_in", "dividend_in", "sell", "usd_to_won"]:
         # 입금 거래
         portfolio.add_cash_transaction(date, "WON", float(won_settlement), transaction_type)
-    elif transaction_category in ["cash_out", "tax_out", "stock_buy", "won_to_usd"]:
+    elif transaction_category in ["cash_out", "buy",  "tax_out", "won_to_usd"]:
         # 출금 거래
         portfolio.add_cash_transaction(date, "WON", -float(won_settlement), transaction_type)
     
@@ -42,10 +44,10 @@ def process_cash_transactions(transaction, date):
 
 
     # 달러 정산금액 처리
-    if transaction_category in ["cash_in", "dividend_in", "stock_sell", "won_to_usd"]:
+    if transaction_category in ["cash_in", "dividend_in", "sell", "won_to_usd"]:
         # 달러 입금
         portfolio.add_cash_transaction(date, "USD", float(usd_settlement), transaction_type)
-    elif transaction_category in ["cash_out", "stock_buy", "tax_out", "usd_to_won"]:
+    elif transaction_category in ["cash_out", "buy", "tax_out", "usd_to_won"]:
         # 달러 출금
         portfolio.add_cash_transaction(date, "USD", -float(usd_settlement), transaction_type)
 
@@ -70,12 +72,11 @@ def run(path, portfolio):
         portfolio.save_portfolio_snapshot(date)
 
     return portfolio
-            
-
-    pass
 
 if __name__ == "__main__":
 
-    path = "data_storage/transactions.csv"
+    path = "./data_storage/transactions.csv"
     portfolio = Portfolio()
-    run(path, portfolio)
+    portfolio = run(path, portfolio)
+    result = portfolio.make_portfolio_history()
+    result.to_csv("./data_storage/portfolio_history.csv", index=False)

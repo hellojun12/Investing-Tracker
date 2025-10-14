@@ -51,7 +51,7 @@ STOCK_INFO_MAP = {
     '허츠 글로벌 홀딩스': ['HTZ', 'Hertz Global Holdings, Inc.', 'Stock'],
     '테이크 투 인터렉티브 소프트웨어': ['TTWO', 'Take-Two Interactive Software, Inc.', 'Stock'],
     '파라마운트 스카이댄스': ['PARA', 'Paramount Global', 'Stock'],  # 합병 관련 변동 있음
-    '버크셔 해서웨이 B': ['BRK.B', 'Berkshire Hathaway Inc. Class B', 'Stock'],
+    '버크셔 해서웨이 B': ['BRK-B', 'Berkshire Hathaway Inc. Class B', 'Stock'],
     '아틀라시언': ['TEAM', 'Atlassian Corporation Plc', 'Stock'],
     '셰브론': ['CVX', 'Chevron Corporation', 'Stock'],
     '레스토랑 브랜즈 인터내셔널': ['QSR', 'Restaurant Brands International Inc.', 'Stock'],
