@@ -55,10 +55,13 @@ class Portfolio:
             
             pos = self.positions[ticker]
             pos['amount'] -= amount
-            pos['total_price'] -= pos['average_price'] * amount
+            pos['total_price'] -= total_price
             
             if pos['amount'] <= 0:
                 del self.positions[ticker]
+            
+            else:
+                pos['average_price'] = pos['total_price'] / pos['amount']
         
         elif transaction_category == "stock_split":
             if ticker not in self.positions:
@@ -69,10 +72,8 @@ class Portfolio:
             pos['amount'] = amount
             
             if original_amount > 0:
-                ratio = amount / original_amount
-                pos['total_price'] *= ratio
                 pos['average_price'] = pos['total_price'] / pos['amount']
-        
+
         self.transaction_history.append({
             "type": "stock",
             "ticker": ticker,
@@ -101,7 +102,7 @@ class Portfolio:
                 "market": pos["market"],
                 "amount": pos["amount"],
                 "average_price": pos["average_price"],
-                "total_value": pos["amount"] * pos["average_price"]
+                "total_value": pos["total_price"]
             }
         
         self.portfolio_history.append(snapshot)

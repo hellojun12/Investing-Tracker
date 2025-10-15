@@ -4,7 +4,6 @@ from portfolio import Portfolio
 
 def process_security_transactions(transaction, date):
 
-    transaction_type = transaction['적요명']
     transaction_category = transaction['적요분류']
 
     #  거래 처리    
