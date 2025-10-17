@@ -37,7 +37,6 @@ class Portfolio:
                 pos = self.positions[ticker]
                 pos['amount'] += amount
                 pos['total_price'] += total_price
-                pos['average_price'] = pos['total_price'] / pos['amount']
             else:
                 # 새로운 포지션 생성
                 self.positions[ticker] = {
@@ -46,7 +45,6 @@ class Portfolio:
                     'amount': amount,
                     'market': market,
                     'total_price': total_price,
-                    'average_price': price
                 }
         
         elif transaction_category == "sell":
@@ -54,25 +52,21 @@ class Portfolio:
                 raise ValueError(f"매도하려는 종목 {ticker}이 포지션에 없습니다.")
             
             pos = self.positions[ticker]
+
+            average_price = pos['total_price'] / pos['amount']
+
             pos['amount'] -= amount
-            pos['total_price'] -= total_price
+            pos['total_price'] -= average_price * amount
             
             if pos['amount'] <= 0:
                 del self.positions[ticker]
-            
-            else:
-                pos['average_price'] = pos['total_price'] / pos['amount']
-        
+
         elif transaction_category == "stock_split":
             if ticker not in self.positions:
                 raise ValueError(f"액면분할/병합하려는 종목 {ticker}이 포지션에 없습니다.")
             
             pos = self.positions[ticker]
-            original_amount = pos['amount']
             pos['amount'] = amount
-            
-            if original_amount > 0:
-                pos['average_price'] = pos['total_price'] / pos['amount']
 
         self.transaction_history.append({
             "type": "stock",
@@ -84,7 +78,6 @@ class Portfolio:
             "transaction_type": transaction_category,
             "date": transaction_date
         })
-    
     
     def save_portfolio_snapshot(self, date):
         """특정 날짜의 포트폴리오 상태를 저장"""
@@ -101,7 +94,6 @@ class Portfolio:
                 "type": pos["type"],
                 "market": pos["market"],
                 "amount": pos["amount"],
-                "average_price": pos["average_price"],
                 "total_value": pos["total_price"]
             }
         
@@ -124,7 +116,6 @@ class Portfolio:
                 "type": "Cash",
                 "market": "KR",
                 "amount": 1,
-                "average_price": cash["WON"],
                 "total_value": cash["WON"]
             })
             
@@ -135,7 +126,6 @@ class Portfolio:
                 "type": "Cash",
                 "market": "US",
                 "amount": 1,
-                "average_price": cash["USD"],
                 "total_value": cash["USD"]
             })
             
@@ -148,7 +138,6 @@ class Portfolio:
                     "type": pos["type"],
                     "market": pos["market"],
                     "amount": pos["amount"],
-                    "average_price": pos["average_price"],
                     "total_value": pos["total_value"]
                 })
         
