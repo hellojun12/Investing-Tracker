@@ -1,4 +1,3 @@
-import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
 pd.set_option('display.float_format', '{:.2f}'.format)
@@ -6,15 +5,11 @@ pd.set_option('display.float_format', '{:.2f}'.format)
 
 df_comp = pd.read_csv("./data_storage/spglobal_data/company.csv")
 df_price = pd.read_csv('./data_storage/spglobal_data/company_price.csv')
+df = pd.read_csv("./data_storage/portfolio_history.csv")
 
 map = df_comp[['tradingitemid', 'ticker_symbol']].set_index('tradingitemid').to_dict()['ticker_symbol']
 df_price['tickersymbol'] = df_price['tradingitemid'].map(map)
 
-df_price_adj = df_price.pivot(index='pricingdate', columns='tickersymbol', values='priceclose')
-df_price_raw = df_price.pivot(index='pricingdate', columns='tickersymbol', values='priceclose_raw')
-####----------
-
-df = pd.read_csv("./data_storage/portfolio_history.csv")
 
 start_date = df['date'].min()
 end_date = df['date'].max()
@@ -74,6 +69,7 @@ df = df[['date', 'ticker', 'type', 'market', 'amount','total_value']]
 
 df_price = df_price.rename(columns={'pricingdate': 'date', 'tickersymbol': 'ticker'})
 df_price['date'] = pd.to_datetime(df_price['date'])
+df_price = expand_portfolio_to_daily(df_price)
 #여기서 date를 주말도 늘려야함
 
 new_df = df.merge(df_price[['date','ticker','priceclose_raw']], on=['date', 'ticker'], how='left')
@@ -81,14 +77,12 @@ new_df = df.merge(df_price[['date','ticker','priceclose_raw']], on=['date', 'tic
 new_df['market_value'] = new_df['priceclose_raw'] * new_df['amount']
 new_df.loc[new_df['type'] == 'Cash', 'market_value'] = new_df.loc[new_df['type'] == 'Cash', 'total_value']
 
-print(new_df)
-
 cash_flow = pd.read_csv('./data_storage/cash_flow.csv').set_index('transaction_date')
 ex_rate = pd.read_csv('./data_storage/currency.csv')[['Unnamed: 0', 'KRWUSD']].ffill().rename(columns={'Unnamed: 0': 'date'})
 ex_rate['date'] = pd.to_datetime(ex_rate['date'])
 cash_flow.index.name = 'date'
 cash_flow.index = pd.to_datetime(cash_flow.index)
-
+cash_flow = cash_flow.groupby('date').sum()
 
 new_df = new_df.merge(ex_rate, on='date', how='left')
 new_df['market_value_won'] = new_df['market_value']
@@ -96,5 +90,29 @@ new_df.loc[new_df['market'] == 'US', 'market_value_won'] *= new_df.loc[new_df['m
 
 ndf = new_df.groupby('date').sum()['market_value_won']
 
-print(new_df.loc[new_df['date'] == '2025-09-27'])
+print(new_df.loc[new_df['date'] == '2025-02-17'])
+print(new_df.loc[new_df['date'] == '2025-02-17']['market_value_won'].sum())
 print(ndf)
+c = cash_flow.cumsum()
+
+print(ndf[ndf<0])
+
+df = ndf.to_frame().join(cash_flow.cumsum(), how='left').ffill()
+df['total_value'] = df['market_value_won'] - df['transaction_amount']
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(12, 6))
+plt.plot(df.index, df['total_value'], linewidth=2)
+plt.title('Total Portfolio Value Over Time')
+plt.xlabel('Date')
+plt.ylabel('Total Value (KRW)')
+plt.grid(True)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig('portfolio_value.png')
+plt.close()
+
+df.to_csv('my_return.csv')
+
+
