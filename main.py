@@ -14,6 +14,11 @@ def process_security_transactions(transaction, date):
         amount = float(transaction['수량/좌수'])
         price = float(transaction['단가/매매기준가'])
         market = transaction['시장구분/통화구분']
+
+        if sec_type == 'Bond' and market == 'USD': #미국채
+            amount /= 100 #좌수 표시
+        elif sec_type == 'Bond': #한국채
+            amount /= 10 #좌수 표시 
         
         portfolio.add_stock_transaction(date, ticker, name, sec_type, amount, price, market, transaction_category)
             
